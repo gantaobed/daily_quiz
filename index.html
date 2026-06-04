@@ -5,19 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Daily Bible Quiz</title>
     
-    <!-- PWA App Links -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#b91c1c">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3073/3073428.png">
 
-    <!-- Tailwind CSS & Fonts -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "a7720d9c-21be-410f-b72e-d14ab1454ad7", // Your App ID from screenshot
+        });
+      });
+    </script>
     
     <style>
         body {
@@ -71,7 +78,6 @@
 </head>
 <body class="min-h-screen antialiased selection:bg-red-500 selection:text-white">
 
-    <!-- ================= SMART USER AUTH MODULE ================= -->
     <div id="authScreen" class="fixed inset-0 bg-red-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
         <div class="bg-white p-6 sm:p-8 w-full max-w-md m-auto my-8 rounded-3xl shadow-2xl border border-red-100 fade-in">
             <div class="flex justify-end mb-2">
@@ -124,7 +130,6 @@
         </div>
     </div>
 
-    <!-- ================= ADMIN LOGIN MODAL ================= -->
     <div id="adminLoginModal" class="fixed inset-0 bg-stone-900/90 backdrop-blur-md z-[60] flex items-center justify-center p-4 hidden">
         <div class="bg-white p-8 w-full max-w-sm rounded-3xl shadow-2xl border border-red-200 fade-in relative">
             <button onclick="closeAdminLoginModal()" class="absolute top-4 right-4 text-stone-400 hover:text-red-600 text-xl font-bold">&times;</button>
@@ -152,7 +157,6 @@
         </div>
     </div>
 
-    <!-- MAIN DASHBOARD FRAME -->
     <header class="bg-gradient-to-r from-red-700 to-red-900 shadow-lg sticky top-0 z-40">
         <div class="max-w-6xl mx-auto px-4 py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
             <div class="flex items-center space-x-2 w-full sm:w-auto justify-between sm:justify-start">
@@ -175,7 +179,6 @@
 
     <main class="max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
         
-        <!-- ================= USER VIEW ================= -->
         <div id="userContainer" class="space-y-5 sm:space-y-6 fade-in hidden">
             <div class="red-card p-5 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white">
                 <div class="w-full sm:w-auto">
@@ -194,11 +197,10 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6">
                 <div class="lg:col-span-2 red-card p-5 sm:p-6">
                     <h3 class="text-base sm:text-lg font-bold text-red-700 mb-4 sm:mb-5 flex items-center border-b border-red-100 pb-3">
-                        <span class="mr-2">📝</span> నేటి 10 ప్రశ్నలు
+                        <span class="mr-2">📝</span> నేటి 5 ప్రశ్నలు
                     </h3>
                     <ol id="liveQuestionsList" class="space-y-3 sm:space-y-4 list-decimal list-outside ml-4 text-stone-700 text-sm sm:text-base leading-relaxed font-medium">
-                        <!-- ప్రశ్నలు ఇక్కడ లోడ్ అవుతాయి -->
-                    </ol>
+                        </ol>
                 </div>
 
                 <div class="space-y-5 sm:space-y-6">
@@ -231,7 +233,6 @@
             </div>
         </div>
 
-        <!-- ================= ADMIN VIEW ================= -->
         <div id="adminContainer" class="space-y-5 sm:space-y-6 hidden fade-in">
             <div class="red-card p-5 sm:p-6 bg-stone-50 mb-6">
                 <h3 class="text-sm sm:text-base font-bold text-red-700 mb-4 flex items-center"><span class="mr-2">📢</span> కొత్త లేఖన భాగాలు పోస్ట్ చేయండి</h3>
@@ -242,7 +243,6 @@
                 </div>
             </div>
 
-            <!-- ADMIN GRADING QUEUE -->
             <div class="red-card p-5 sm:p-6">
                 <div class="flex justify-between items-center mb-5 border-b border-red-100 pb-3">
                     <h3 class="text-sm sm:text-base font-bold text-red-700 flex items-center"><span class="mr-2">📥</span> జవాబు పత్రాల క్యూ (Grading Queue)</h3>
@@ -257,7 +257,6 @@
             </div>
         </div>
 
-        <!-- ================= DUAL LEADERBOARDS ================= -->
         <hr class="border-red-200 my-8 sm:my-10">
         <section class="max-w-3xl mx-auto space-y-4 sm:space-y-6 fade-in">
             <div class="text-center px-2">
@@ -294,7 +293,6 @@
         </section>
     </main>
 
-    <!-- ================= APP INSTALLATION SERVICE WORKER ================= -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -305,10 +303,12 @@
         }
     </script>
 
-    <!-- ================= BACKEND ENGINE LAYER ================= -->
     <script>
         const SUPABASE_URL = "https://umizvkrztgsdfujubpub.supabase.co"; 
         const SUPABASE_ANON_KEY = "sb_publishable_yfoIeLljseU3TuaL62cYkg_mbIQxcU2"; 
+        
+        // ⚠️ మీ OneSignal REST API Key ని ఇక్కడ పేస్ట్ చేయండి!
+        const ONESIGNAL_REST_API_KEY = "YOUR_REST_API_KEY"; 
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let currentUserSession = null;
@@ -316,9 +316,9 @@
         let currentLeaderboardMetric = 'streak'; 
 
         const VALID_ADMINS = [
-            { id: "admin1", pass: "pass123" },
-            { id: "admin2", pass: "pass456" },
-            { id: "admin3", pass: "pass789" }
+            { id: "obed", pass: "obed123" },
+            { id: "jayaraju", pass: "jayaraju123" },
+            { id: "daniel", pass: "daniel123" }
         ];
 
         async function initLiveApplication() {
@@ -350,6 +350,11 @@
                     headerName.innerText = `👤 ${shortName}`;
                     headerName.classList.remove('hidden');
                     
+                    // OneSignal కి యూజర్ ID ని లింక్ చేయడం
+                    OneSignalDeferred.push(function(OneSignal) {
+                        OneSignal.login(currentUserSession.id); 
+                    });
+
                     fetchUserFeedback();
                 }
             } else {
@@ -429,6 +434,12 @@
         function logoutSession() {
             if(confirm("మీరు లాగౌట్ అవ్వాలనుకుంటున్నారా?")) {
                 localStorage.removeItem('quiz_user_session');
+                
+                // OneSignal నుండి లాగౌట్ చేయడం
+                OneSignalDeferred.push(function(OneSignal) {
+                    OneSignal.logout();
+                });
+
                 location.reload();
             }
         }
@@ -455,6 +466,22 @@
             const questionsArray = questionsText.split('\n').filter(q => q.trim() !== "");
 
             await supabaseClient.from('daily_quiz').insert([{ chapters: chapters, questions: questionsArray }]);
+            
+            // అందరికీ నోటిఫికేషన్ పంపడం (All Users)
+            fetch("https://onesignal.com/api/v1/notifications", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${ONESIGNAL_REST_API_KEY}`
+                },
+                body: JSON.stringify({
+                    app_id: "a7720d9c-21be-410f-b72e-d14ab1454ad7",
+                    included_segments: ["Total Subscriptions"],
+                    headings: { "en": "కొత్త ప్రశ్నలు వచ్చాయి! 📖" },
+                    contents: { "en": "ఈరోజు క్విజ్ ప్రశ్నలు అప్‌డేట్ అయ్యాయి. వెంటనే యాప్ ఓపెన్ చేసి జవాబులు రాయండి!" }
+                })
+            }).catch(e => console.log("Push error:", e));
+
             alert("ప్రశ్నలు పబ్లిష్ చేయబడ్డాయి!");
             document.getElementById('dbChaptersInput').value = ""; document.getElementById('dbQuestionsInput').value = "";
             fetchLiveQuiz();
@@ -540,7 +567,7 @@
             const remarks = document.getElementById(`remarks_${submissionId}`).value || "బాగా రాశారు!";
 
             if(isNaN(marksGiven) || marksGiven < 0 || marksGiven > 10) {
-                alert("దయచేసి 0 నుండి 10 మధ్య సరైన మార్కులు వేయండి."); return;
+                alert("దయచేసి 0 నుండి 5 మధ్య సరైన మార్కులు వేయండి."); return;
             }
 
             await supabaseClient.from('submissions').update({ marks: marksGiven, remarks: remarks }).eq('id', submissionId);
@@ -549,6 +576,22 @@
                 total_marks: currentTotalMarks + marksGiven,
                 streak: currentStreak + 1
             }).eq('id', userId);
+
+            // మార్కులు పడిన నిర్దిష్ట యూజర్‌కి మాత్రమే నోటిఫికేషన్ పంపడం
+            fetch("https://onesignal.com/api/v1/notifications", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${a7720d9c-21be-410f-b72e-d14ab1454ad7}`
+                },
+                body: JSON.stringify({
+                    app_id: "a7720d9c-21be-410f-b72e-d14ab1454ad7",
+                    include_aliases: { "external_id": [userId] },
+                    target_channel: "push",
+                    headings: { "en": "మీ మార్కులు వచ్చేశాయి! 🏆" },
+                    contents: { "en": `మీకు ${marksGiven}/10 మార్కులు వచ్చాయి. అడ్మిన్ రిమార్క్స్ చూడటానికి యాప్ ఓపెన్ చేయండి.` }
+                })
+            }).catch(e => console.log("Push error:", e));
 
             alert("మార్కులు సక్సెస్ ఫుల్ గా సబ్మిట్ అయ్యాయి!");
             fetchAdminGradingQueue();
