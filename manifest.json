@@ -5,6 +5,7 @@
   "display": "standalone",
   "background_color": "#fafafa",
   "theme_color": "#b91c1c",
+  "description": "Daily Bible Quiz App for grading and leaderboards",
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/3073/3073428.png",
